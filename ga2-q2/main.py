@@ -21,22 +21,19 @@ class TokenRequest(BaseModel):
 @app.post("/verify")
 async def verify_token(request: TokenRequest):
     try:
-        # Decode and verify the token against all rules
         payload = jwt.decode(
             request.token,
             PUBLIC_KEY,
             algorithms=["RS256"],
-            audience="tds-1yeexha.apps.exam.local",
+            audience="tds-1iyeexha.apps.exam.local",  # <--- FIXED TYPO HERE
             issuer="https://idp.exam.local",
             options={"require": ["exp", "iss", "aud"]}
         )
         
-        # Extract claims
         email = payload.get("email")
         sub = payload.get("sub")
         aud = payload.get("aud")
         
-        # If aud is returned as a list with one item, convert to string
         if isinstance(aud, list) and len(aud) == 1:
             aud = aud[0]
             
@@ -48,5 +45,4 @@ async def verify_token(request: TokenRequest):
         }
         
     except Exception:
-        # Catch any JWT errors (expired, wrong audience, bad signature, etc.)
         return JSONResponse(status_code=401, content={"valid": False})
