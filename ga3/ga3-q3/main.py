@@ -1,23 +1,23 @@
+import re
 import os
 from typing import Optional
 from dateutil import parser as date_parser
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from openai import OpenAI
 
 app = FastAPI()
 
-# 5. Enable CORS for Cloudflare Worker / Grader
+# Enable CORS for Cloudflare Worker / Grader
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 1. Define Pydantic models for Request and Response
+# Define Pydantic models
 class InvoiceRequest(BaseModel):
     invoice_text: str
 
@@ -29,55 +29,62 @@ class InvoiceResponse(BaseModel):
     tax: Optional[float] = None
     currency: Optional[str] = None
 
-# Initialize OpenAI Client (Ensure OPENAI_API_KEY is set in your environment)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-# 3. Helper function to parse any date string to YYYY-MM-DD
-def parse_date_to_iso(date_str: str) -> Optional[str]:
-    if not date_str:
-        return None
+# Helper to clean and convert extracted amount strings to floats
+def parse_amount(text: str) -> Optional[float]:
+    if not text: return None
+    # Remove commas, spaces, and currency symbols, keep only digits and dots
+    clean_text = re.sub(r"[^\d.]", "", text)
     try:
-        # dateutil can parse "15 March 2026" automatically
-        parsed_date = date_parser.parse(date_str, fuzzy=True)
-        return parsed_date.strftime("%Y-%m-%d")
-    except Exception:
+        return float(clean_text)
+    except ValueError:
         return None
 
 @app.post("/extract", response_model=InvoiceResponse)
 async def extract_invoice(request: InvoiceRequest):
     text = request.invoice_text
     
-    try:
-        # 2. Use LLM with Structured Output (JSON mode)
-        completion = client.beta.chat.completions.parse(
-            model="gpt-4o-mini", # Cost-effective and highly capable
-            messages=[
-                {
-                    "role": "system", 
-                    "content": (
-                        "You are an expert invoice extraction assistant. Extract the fields from the invoice text.\n"
-                        "Rules:\n"
-                        "- 'invoice_no': The invoice number.\n"
-                        "- 'date': The invoice date, strictly formatted as YYYY-MM-DD.\n"
-                        "- 'vendor': The name of the vendor or company issuing the invoice.\n"
-                        "- 'amount': The subtotal BEFORE any taxes are applied.\n"
-                        "- 'tax': The exact tax amount ONLY (e.g., GST, VAT). Do not include this in 'amount'.\n"
-                        "- 'currency': Infer from symbols (Rs./₹ -> INR, $ -> USD, € -> EUR). Default to INR if unclear.\n"
-                        "- If any field is missing, return null for that key.\n"
-                    )
-                },
-                {"role": "user", "content": text}
-            ],
-            response_format=InvoiceResponse, # Forces the LLM to output strictly matching this schema
-        )
-        
-        extracted_data = completion.choices[0].message.parsed
-        
-        # Ensure date is strictly formatted to YYYY-MM-DD just in case
-        if extracted_data.date:
-            extracted_data.date = parse_date_to_iso(extracted_data.date)
-            
-        return extracted_data
+    # 1. Invoice No (Looks for Invoice No, Inv No, Invoice Number, etc.)
+    inv_match = re.search(r"(?:Invoice|Inv)\s*(?:No|Number|#)?[:.\-]?\s*([A-Z0-9\-]+)", text, re.IGNORECASE)
+    invoice_no = inv_match.group(1).strip() if inv_match else None
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
+    # 2. Date (Looks for Date, Invoice Date)
+    date_match = re.search(r"(?:Date|Invoice Date)[:.\-]?\s*([A-Za-z0-9\-/, ]+)", text, re.IGNORECASE)
+    date_str = date_match.group(1).strip() if date_match else None
+    date_iso = None
+    if date_str:
+        try:
+            # dateutil automatically converts "15 March 2026" to "2026-03-15"
+            date_iso = date_parser.parse(date_str, fuzzy=True).strftime("%Y-%m-%d")
+        except Exception:
+            date_iso = None
+
+    # 3. Vendor (Looks for Vendor, From, Company, Seller, Billed By)
+    vendor_match = re.search(r"(?:Vendor|From|Company|Seller|Billed By)[:.\-]?\s*(.+)", text, re.IGNORECASE)
+    vendor = vendor_match.group(1).strip() if vendor_match else None
+
+    # 4. Amount / Subtotal (Strictly looks for Subtotal, Total (excl. tax), etc. to avoid grabbing the Grand Total)
+    amount_match = re.search(r"(?:Subtotal|Sub Total|Total \(excl\.? tax\)|Taxable Amount|Amount)[:.\-]?\s*(?:Rs\.?|₹|INR)?\s*([\d,]+\.?\d*)", text, re.IGNORECASE)
+    amount = parse_amount(amount_match.group(1)) if amount_match else None
+
+    # 5. Tax (Looks for GST, VAT, Tax, CGST, SGST, IGST)
+    tax_match = re.search(r"(?:GST|VAT|Tax|CGST|SGST|IGST)(?:\s*\(\d+%\))?[:.\-]?\s*(?:Rs\.?|₹|INR)?\s*([\d,]+\.?\d*)", text, re.IGNORECASE)
+    tax = parse_amount(tax_match.group(1)) if tax_match else None
+
+    # 6. Currency (Infers from symbols, defaults to INR)
+    if re.search(r"Rs\.?|₹|INR", text, re.IGNORECASE):
+        currency = "INR"
+    elif re.search(r"\$|USD", text):
+        currency = "USD"
+    elif re.search(r"€|EUR", text):
+        currency = "EUR"
+    else:
+        currency = "INR" 
+
+    return InvoiceResponse(
+        invoice_no=invoice_no,
+        date=date_iso,
+        vendor=vendor,
+        amount=amount,
+        tax=tax,
+        currency=currency
+    )
