@@ -1,15 +1,13 @@
 import os
 import base64
-import io
-import PIL.Image
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+from openai import OpenAI
 
 app = FastAPI()
 
-# 1. Enable CORS to accept requests from any origin (Required for the grader)
+# 1. Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,15 +16,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. Configure Gemini API
-# You must set the GOOGLE_API_KEY environment variable in your deployment platform
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("GOOGLE_API_KEY environment variable not set!")
-    
-genai.configure(api_key=GOOGLE_API_KEY)
-# gemini-1.5-flash is free, fast, and excellent for OCR/charts
-model = genai.GenerativeModel("gemini-2.0-flash")
+# 2. Configure Groq Client
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY environment variable not set!")
+
+client = OpenAI(
+    api_key=GROQ_API_KEY,
+    base_url="https://api.groq.com/openai/v1",
+)
 
 class QARequest(BaseModel):
     image_base64: str
@@ -38,16 +36,11 @@ class QAResponse(BaseModel):
 @app.post("/answer-image", response_model=QAResponse)
 async def answer_image(request: QARequest):
     try:
-        # 3. Decode Base64 Image
         img_str = request.image_base64
-        # Remove metadata prefix if present (e.g., "data:image/png;base64,")
         if "," in img_str:
             img_str = img_str.split(",", 1)[1]
             
-        image_data = base64.b64decode(img_str)
-        image = PIL.Image.open(io.BytesIO(image_data))
-        
-        # 4. Prompt Engineering (Strict rules for numeric answers)
+        # 3. Strict Prompt
         prompt = f"""
         {request.question}
         
@@ -58,13 +51,26 @@ async def answer_image(request: QARequest):
         - Just output the exact answer.
         """
         
-        # Generate response
-        response = model.generate_content([prompt, image])
-        answer = response.text.strip()
+        # 4. Call Groq's Llama 3.2 Vision Model
+        completion = client.chat.completions.create(
+            model="llama-3.2-90b-vision-preview", 
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{img_str}"},
+                        },
+                    ],
+                }
+            ],
+            temperature=0.1,
+            max_tokens=50,
+        )
         
-        # Clean up common LLM quirks (like wrapping the answer in quotes)
-        answer = answer.strip('\'"')
-        
+        answer = completion.choices[0].message.content.strip().strip('\'"')
         return {"answer": answer}
         
     except Exception as e:
