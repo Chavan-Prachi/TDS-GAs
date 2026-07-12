@@ -26,7 +26,7 @@ if not GOOGLE_API_KEY:
     
 genai.configure(api_key=GOOGLE_API_KEY)
 # gemini-1.5-flash is free, fast, and excellent for OCR/charts
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 class QARequest(BaseModel):
     image_base64: str
