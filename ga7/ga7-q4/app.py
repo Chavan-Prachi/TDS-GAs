@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 from urllib.parse import urlparse, unquote
-from html import unescape
 import re
-import json
 
 app = Flask(__name__)
 
@@ -14,70 +12,71 @@ ALLOWED_HOSTS = {
 CHANNELS = {"html", "markdown", "url", "sql", "shell"}
 
 
-def result(safe, reason):
+def respond(safe, reason):
     return jsonify({
         "safe": safe,
         "reason": reason
     })
 
 
-def decode_once(s):
-    # Percent escapes
-    decoded = unquote(s)
+def decode_once(text):
+    # 1. Percent escapes
+    decoded = unquote(text)
 
-    # HTML named + numeric entities
-    decoded = unescape(decoded)
+    # 2. ONLY the HTML entities specified by the question
+    entities = {
+        "&lt;": "<",
+        "&gt;": ">",
+        "&quot;": '"',
+        "&apos;": "'",
+        "&amp;": "&"
+    }
 
-    # Literal \uXXXX escapes
-    def replace_unicode(match):
+    def numeric_entity(match):
+        value = match.group(1)
+        try:
+            return chr(int(value))
+        except (ValueError, OverflowError):
+            return match.group(0)
+
+    def hex_entity(match):
+        value = match.group(1)
+        try:
+            return chr(int(value, 16))
+        except (ValueError, OverflowError):
+            return match.group(0)
+
+    # Numeric decimal entities
+    decoded = re.sub(r"&#([0-9]+);", numeric_entity, decoded)
+
+    # Numeric hexadecimal entities
+    decoded = re.sub(r"&#x([0-9a-fA-F]+);", hex_entity, decoded)
+
+    # Required named entities
+    for entity, replacement in entities.items():
+        decoded = decoded.replace(entity, replacement)
+
+    # 3. Literal \uXXXX escapes
+    def unicode_escape(match):
         try:
             return chr(int(match.group(1), 16))
-        except ValueError:
+        except (ValueError, OverflowError):
             return match.group(0)
 
     decoded = re.sub(
         r"\\u([0-9a-fA-F]{4})",
-        replace_unicode,
+        unicode_escape,
         decoded
     )
 
     return decoded
 
 
-def has_dangerous_scheme(text):
-    # javascript:, data:, vbscript:
-    # Optional whitespace before :
-    if re.search(
-        r"(?i)(javascript|data|vbscript)\s*:",
-        text
-    ):
-        return True
-
-    # Check extracted URLs
-    urls = extract_urls(text)
-
-    for value in urls:
-        candidate = value.strip()
-
-        # Protocol-relative URL
-        if candidate.startswith("//"):
-            candidate = "https:" + candidate
-
-        parsed = urlparse(candidate)
-
-        # Only consider actual URLs with schemes
-        if parsed.scheme:
-            if parsed.scheme.lower() not in {"http", "https"}:
-                return True
-
-    return False
-
-
 def extract_urls(text, channel):
     urls = []
 
     if channel == "html":
-        # Quoted src/href attributes
+        # Only quoted src= and href= attributes
         pattern = re.compile(
             r"""(?is)\b(?:src|href)\s*=\s*(['"])(.*?)\1"""
         )
@@ -88,43 +87,9 @@ def extract_urls(text, channel):
     elif channel == "markdown":
         # Target inside ](...)
         pattern = re.compile(
-            r"""\]\(\s*([^)]+?)\s*\)"""
-        )
-
-        for match in pattern.finditer(text):
-            value = match.group(1).strip()
-
-            # Remove optional markdown title:
-            # [x](url "title")
-            if value.startswith("<") and ">" in value:
-                value = value[1:value.index(">")]
-            else:
-                value = value.split()[0]
-
-            urls.append(value)
-
-    elif channel == "url":
-        value = text.strip()
-        if value:
-            urls.append(value)
-
-    return urls
-
-
-def extract_urls(text, channel=None):
-    urls = []
-
-    if channel == "html":
-        pattern = re.compile(
-            r"""(?is)\b(?:src|href)\s*=\s*(['"])(.*?)\1"""
-        )
-        for match in pattern.finditer(text):
-            urls.append(match.group(2))
-
-    elif channel == "markdown":
-        pattern = re.compile(
             r"""\]\(\s*(?:<([^>]+)>|([^\s)]+))"""
         )
+
         for match in pattern.finditer(text):
             urls.append(match.group(1) or match.group(2))
 
@@ -136,21 +101,44 @@ def extract_urls(text, channel=None):
     return urls
 
 
-def has_external_exfil(text, channel):
-    for raw_url in extract_urls(text, channel):
-        value = raw_url.strip()
+def dangerous_scheme(text, channel):
+    # Explicit dangerous schemes anywhere in the text.
+    if re.search(
+        r"(?i)(javascript|data|vbscript)\s*:",
+        text
+    ):
+        return True
 
-        # Relative URLs are allowed
-        if value.startswith("/") and not value.startswith("//"):
-            continue
+    # Extracted URLs may use other schemes.
+    for raw in extract_urls(text, channel):
+        value = raw.strip()
 
-        # Protocol-relative URLs are absolute
         if value.startswith("//"):
             value = "https:" + value
 
         parsed = urlparse(value)
 
-        # Only absolute URLs are checked for host
+        if parsed.scheme:
+            if parsed.scheme.lower() not in {"http", "https"}:
+                return True
+
+    return False
+
+
+def external_exfil(text, channel):
+    for raw in extract_urls(text, channel):
+        value = raw.strip()
+
+        # Relative references are safe.
+        if value.startswith("/") and not value.startswith("//"):
+            continue
+
+        # Protocol-relative is absolute.
+        if value.startswith("//"):
+            value = "https:" + value
+
+        parsed = urlparse(value)
+
         if parsed.scheme.lower() in {"http", "https"}:
             hostname = parsed.hostname
 
@@ -163,87 +151,102 @@ def has_external_exfil(text, channel):
     return False
 
 
-def html_rules(text):
-    # SCRIPT_TAG
+def check_html(text):
+    # 1. SCRIPT_TAG
     if re.search(
         r"(?is)<\s*(script|iframe|object|embed)\b",
         text
     ):
         return "SCRIPT_TAG"
 
-    # EVENT_HANDLER
+    # 2. EVENT_HANDLER
     if re.search(
-        r"""(?is)\bon[a-zA-Z0-9_-]+\s*=""",
+        r"(?is)\bon[a-zA-Z0-9_-]+\s*=",
         text
     ):
         return "EVENT_HANDLER"
 
-    # DANGEROUS_SCHEME
-    if has_dangerous_scheme(text):
+    # 3. DANGEROUS_SCHEME
+    if dangerous_scheme(text, "html"):
         return "DANGEROUS_SCHEME"
 
-    # EXTERNAL_EXFIL
-    if has_external_exfil(text, "html"):
+    # 4. EXTERNAL_EXFIL
+    if external_exfil(text, "html"):
         return "EXTERNAL_EXFIL"
 
     return None
 
 
-def markdown_rules(text):
-    if has_dangerous_scheme(text):
+def check_markdown(text):
+    if dangerous_scheme(text, "markdown"):
         return "DANGEROUS_SCHEME"
 
-    if has_external_exfil(text, "markdown"):
+    if external_exfil(text, "markdown"):
         return "EXTERNAL_EXFIL"
 
     return None
 
 
-def url_rules(text):
-    if has_dangerous_scheme(text):
+def check_url(text):
+    if dangerous_scheme(text, "url"):
         return "DANGEROUS_SCHEME"
 
-    if has_external_exfil(text, "url"):
+    if external_exfil(text, "url"):
         return "EXTERNAL_EXFIL"
 
     return None
 
 
-def sql_rules(text):
-    if re.search(
-        r"""(?is)('|")|;|--|/\*|\bunion\b|\bor\s+1\s*=\s*1\b""",
-        text
-    ):
+def check_sql(text):
+    # Exact categories from the question:
+    # single quote, double quote, semicolon, --, /*,
+    # word union, or 1=1
+    if re.search(r"['\";]", text):
+        return "SQL_METACHAR"
+
+    if "--" in text:
+        return "SQL_METACHAR"
+
+    if "/*" in text:
+        return "SQL_METACHAR"
+
+    if re.search(r"(?i)\bunion\b", text):
+        return "SQL_METACHAR"
+
+    if re.search(r"(?i)\bor 1=1\b", text):
         return "SQL_METACHAR"
 
     return None
 
 
-def shell_rules(text):
-    if re.search(
-        r"""[;&|`<>]|\$\(|\$\{""",
-        text
-    ):
+def check_shell(text):
+    if re.search(r"[;&|`<>]", text):
+        return "SHELL_METACHAR"
+
+    if "$(" in text:
+        return "SHELL_METACHAR"
+
+    if "${" in text:
         return "SHELL_METACHAR"
 
     return None
 
 
-def would_trip_channel(text, channel):
+def check_rules(text, channel):
     if channel == "html":
-        return html_rules(text)
+        return check_html(text)
 
     if channel == "markdown":
-        return markdown_rules(text)
+        return check_markdown(text)
 
     if channel == "url":
-        return url_rules(text)
+        return check_url(text)
 
     if channel == "sql":
-        return sql_rules(text)
+        return check_sql(text)
 
     if channel == "shell":
-        return shell_rules(text)
+        return check_shell(text)
 
     return None
 
@@ -251,55 +254,46 @@ def would_trip_channel(text, channel):
 @app.route("/sanitize-output", methods=["POST"])
 def sanitize_output():
 
-    # --------------------------------------------------
-    # 1. INVALID SCHEMA
-    # --------------------------------------------------
-
+    # 1. INVALID_SCHEMA
     if not request.is_json:
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
     data = request.get_json(silent=True)
 
     if not isinstance(data, dict):
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
     if set(data.keys()) != {"channel", "output"}:
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
     channel = data["channel"]
     output = data["output"]
 
     if channel not in CHANNELS:
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
     if not isinstance(output, str):
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
     if len(output) > 20000:
-        return result(False, "INVALID_SCHEMA")
+        return respond(False, "INVALID_SCHEMA")
 
-    # --------------------------------------------------
-    # 2. ENCODED PAYLOAD
-    # --------------------------------------------------
-
+    # 2. ENCODED_PAYLOAD
     decoded = decode_once(output)
 
     if decoded != output:
-        decoded_reason = would_trip_channel(decoded, channel)
+        decoded_reason = check_rules(decoded, channel)
 
         if decoded_reason is not None:
-            return result(False, "ENCODED_PAYLOAD")
+            return respond(False, "ENCODED_PAYLOAD")
 
-    # --------------------------------------------------
-    # 3. ORIGINAL OUTPUT CHANNEL RULES
-    # --------------------------------------------------
-
-    reason = would_trip_channel(output, channel)
+    # 3. Original output rules
+    reason = check_rules(output, channel)
 
     if reason is not None:
-        return result(False, reason)
+        return respond(False, reason)
 
-    return result(True, "SAFE")
+    return respond(True, "SAFE")
 
 
 @app.route("/", methods=["GET"])
