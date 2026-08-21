@@ -27,10 +27,13 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          cd ga7/ga7-q1
+          pip install -r requirements.txt
 
       - name: Start application
         run: |
+          cd ga7/ga7-q1
           gunicorn app:app --bind 127.0.0.1:5000 &
           sleep 3
 
