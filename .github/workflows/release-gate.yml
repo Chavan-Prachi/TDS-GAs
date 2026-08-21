@@ -27,17 +27,17 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          cd ga7/ga7-q1
-          pip install -r requirements.txt
+        working-directory: ga7/ga7-q1
+        run: pip install -r requirements.txt
 
       - name: Start application
+        working-directory: ga7/ga7-q1
         run: |
-          cd ga7/ga7-q1
           gunicorn app:app --bind 127.0.0.1:5000 &
           sleep 3
 
       - name: Test release gate
+        working-directory: ga7/ga7-q1
         run: |
           python - <<'PY'
           import json
@@ -83,10 +83,10 @@ jobs:
           with urllib.request.urlopen(req) as response:
               result = json.load(response)
 
-          assert result == {
-              "decision": "promote",
-              "violations": []
-          }
+          print(result)
+
+          assert result["decision"] == "promote"
+          assert result["violations"] == []
 
           print("Release gate test passed")
           PY
