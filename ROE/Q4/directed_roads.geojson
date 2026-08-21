@@ -1,0 +1,2581 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "schema_version": "incident-atlas-route/1",
+    "assignment_id": "atlas-a1de3836",
+    "coordinate_reference_system": "urn:ogc:def:crs:OGC::CRS84",
+    "coordinate_order": "longitude, latitude (decimal degrees)",
+    "raster": {
+      "filename": "incident_atlas.bmp",
+      "width_pixels": 300,
+      "height_pixels": 220,
+      "row_origin": "top",
+      "column_origin": "left",
+      "indices_are_zero_based": true,
+      "index_refers_to": "pixel centre"
+    },
+    "affine": {
+      "A": 0.000084,
+      "D": -0.000006,
+      "B": -0.000012,
+      "E": -0.000082,
+      "C": 80.66054,
+      "F": 19.902465,
+      "formula": "X=A*column+B*row+C; Y=D*column+E*row+F",
+      "world_file_line_order": [
+        "A",
+        "D",
+        "B",
+        "E",
+        "C",
+        "F"
+      ]
+    },
+    "icon_encoding": {
+      "icon_size_pixels": 9,
+      "centre": "The unique centre is the middle of a solid 5x5 effect-colour core.",
+      "effect_core": "Chebyshev distance 0..2 from the centre uses an effect RGB exactly.",
+      "white_gap": "Chebyshev distance 3 is RGB [255,255,255].",
+      "window_frame": "Chebyshev distance 4 uses a window RGB exactly.",
+      "effect_legend": [
+        {
+          "code": "CLOSED",
+          "rgb": [
+            211,
+            47,
+            47
+          ],
+          "delay_seconds": null,
+          "rule": "The edge cannot be entered while its incident window is active; wait until the window end."
+        },
+        {
+          "code": "DELAY_17",
+          "rgb": [
+            245,
+            158,
+            11
+          ],
+          "delay_seconds": 17,
+          "rule": "Entering during the active window adds 17 seconds; waiting until the window end is allowed."
+        },
+        {
+          "code": "DELAY_29",
+          "rgb": [
+            37,
+            99,
+            235
+          ],
+          "delay_seconds": 29,
+          "rule": "Entering during the active window adds 29 seconds; waiting until the window end is allowed."
+        }
+      ],
+      "window_legend": [
+        {
+          "window_id": "W1",
+          "start_seconds": 38,
+          "end_seconds": 274,
+          "rgb": [
+            147,
+            51,
+            234
+          ]
+        },
+        {
+          "window_id": "W2",
+          "start_seconds": 68,
+          "end_seconds": 160,
+          "rgb": [
+            22,
+            163,
+            74
+          ]
+        },
+        {
+          "window_id": "W3",
+          "start_seconds": 156,
+          "end_seconds": 240,
+          "rgb": [
+            8,
+            145,
+            178
+          ]
+        }
+      ]
+    },
+    "incident_count": 7,
+    "edge_matching_rule": "Transform each icon centre to world coordinates and match it to LineString vertex properties.atlas_anchor_vertex. The match is exact apart from decimal serialization.",
+    "routing": {
+      "start_node_id": "N00",
+      "destination_node_id": "N44",
+      "mandatory_checkpoint_node_id": "N22",
+      "departure_seconds": 44,
+      "time_units": "integer seconds on one shared clock",
+      "incident_window_semantics": "Half-open [start_seconds,end_seconds): active at start, inactive at end.",
+      "incident_entry_semantics": "Effects depend on edge-entry time. For CLOSED, wait to end. For a delay, choose the earlier of entering now with the delay or waiting to end and entering without it. Waiting at nodes is allowed.",
+      "arrival_semantics": "arrival_seconds is the absolute shared-clock time at the destination.",
+      "checkpoint_semantics": "The ordered route must visit the mandatory checkpoint at least once.",
+      "turn_restrictions": [
+        {
+          "restriction_id": "TR1",
+          "in_edge_id": "H21E",
+          "via_node_id": "N22",
+          "out_edge_id": "V22S"
+        }
+      ]
+    },
+    "submission": {
+      "exact_top_level_keys": [
+        "incidents",
+        "route_edge_ids",
+        "arrival_seconds"
+      ],
+      "incident_object_keys": [
+        "edge_id",
+        "effect",
+        "window_id"
+      ],
+      "incident_order_matters": false,
+      "route_order_matters": true
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.66246,
+          19.900505
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N00"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.667668,
+          19.900133
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.672876,
+          19.899761
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.678084,
+          19.899389
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.683292,
+          19.899017
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.661932,
+          19.896897
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.66714,
+          19.896525
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.672348,
+          19.896153
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.677556,
+          19.895781
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.682764,
+          19.895409
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N14"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.661404,
+          19.893289
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N20"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.666612,
+          19.892917
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N21"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.67182,
+          19.892545
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N22"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.677028,
+          19.892173
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N23"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.682236,
+          19.891801
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.660876,
+          19.889681
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N30"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.666084,
+          19.889309
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N31"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.671292,
+          19.888937
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N32"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.6765,
+          19.888565
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N33"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.681708,
+          19.888193
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N34"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.660348,
+          19.886073
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N40"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.665556,
+          19.885701
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N41"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.670764,
+          19.885329
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N42"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.675972,
+          19.884957
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N43"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.68118,
+          19.884585
+        ]
+      },
+      "properties": {
+        "feature_type": "node",
+        "node_id": "N44"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.66246,
+            19.900505
+          ],
+          [
+            80.665124,
+            19.900729
+          ],
+          [
+            80.667668,
+            19.900133
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H00E",
+        "physical_road_id": "H00",
+        "from_node_id": "N00",
+        "to_node_id": "N01",
+        "base_seconds": 76,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.667668,
+            19.900133
+          ],
+          [
+            80.665004,
+            19.899909
+          ],
+          [
+            80.66246,
+            19.900505
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H00W",
+        "physical_road_id": "H00",
+        "from_node_id": "N01",
+        "to_node_id": "N00",
+        "base_seconds": 83,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.667668,
+            19.900133
+          ],
+          [
+            80.670332,
+            19.900357
+          ],
+          [
+            80.672876,
+            19.899761
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H01E",
+        "physical_road_id": "H01",
+        "from_node_id": "N01",
+        "to_node_id": "N02",
+        "base_seconds": 75,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672876,
+            19.899761
+          ],
+          [
+            80.670212,
+            19.899537
+          ],
+          [
+            80.667668,
+            19.900133
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H01W",
+        "physical_road_id": "H01",
+        "from_node_id": "N02",
+        "to_node_id": "N01",
+        "base_seconds": 69,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672876,
+            19.899761
+          ],
+          [
+            80.67554,
+            19.899985
+          ],
+          [
+            80.678084,
+            19.899389
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H02E",
+        "physical_road_id": "H02",
+        "from_node_id": "N02",
+        "to_node_id": "N03",
+        "base_seconds": 84,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.678084,
+            19.899389
+          ],
+          [
+            80.680748,
+            19.899613
+          ],
+          [
+            80.683292,
+            19.899017
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H03E",
+        "physical_road_id": "H03",
+        "from_node_id": "N03",
+        "to_node_id": "N04",
+        "base_seconds": 76,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.683292,
+            19.899017
+          ],
+          [
+            80.680628,
+            19.898793
+          ],
+          [
+            80.678084,
+            19.899389
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H03W",
+        "physical_road_id": "H03",
+        "from_node_id": "N04",
+        "to_node_id": "N03",
+        "base_seconds": 70,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661932,
+            19.896897
+          ],
+          [
+            80.664596,
+            19.897121
+          ],
+          [
+            80.66714,
+            19.896525
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H10E",
+        "physical_road_id": "H10",
+        "from_node_id": "N10",
+        "to_node_id": "N11",
+        "base_seconds": 85,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.66714,
+            19.896525
+          ],
+          [
+            80.669804,
+            19.896749
+          ],
+          [
+            80.672348,
+            19.896153
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H11E",
+        "physical_road_id": "H11",
+        "from_node_id": "N11",
+        "to_node_id": "N12",
+        "base_seconds": 74,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672348,
+            19.896153
+          ],
+          [
+            80.675012,
+            19.896377
+          ],
+          [
+            80.677556,
+            19.895781
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H12E",
+        "physical_road_id": "H12",
+        "from_node_id": "N12",
+        "to_node_id": "N13",
+        "base_seconds": 72,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677556,
+            19.895781
+          ],
+          [
+            80.674892,
+            19.895557
+          ],
+          [
+            80.672348,
+            19.896153
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H12W",
+        "physical_road_id": "H12",
+        "from_node_id": "N13",
+        "to_node_id": "N12",
+        "base_seconds": 80,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677556,
+            19.895781
+          ],
+          [
+            80.68022,
+            19.896005
+          ],
+          [
+            80.682764,
+            19.895409
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H13E",
+        "physical_road_id": "H13",
+        "from_node_id": "N13",
+        "to_node_id": "N14",
+        "base_seconds": 81,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682764,
+            19.895409
+          ],
+          [
+            80.6801,
+            19.895185
+          ],
+          [
+            80.677556,
+            19.895781
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H13W",
+        "physical_road_id": "H13",
+        "from_node_id": "N14",
+        "to_node_id": "N13",
+        "base_seconds": 83,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661404,
+            19.893289
+          ],
+          [
+            80.664068,
+            19.893513
+          ],
+          [
+            80.666612,
+            19.892917
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H20E",
+        "physical_road_id": "H20",
+        "from_node_id": "N20",
+        "to_node_id": "N21",
+        "base_seconds": 8,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666612,
+            19.892917
+          ],
+          [
+            80.663948,
+            19.892693
+          ],
+          [
+            80.661404,
+            19.893289
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H20W",
+        "physical_road_id": "H20",
+        "from_node_id": "N21",
+        "to_node_id": "N20",
+        "base_seconds": 72,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666612,
+            19.892917
+          ],
+          [
+            80.669276,
+            19.893141
+          ],
+          [
+            80.67182,
+            19.892545
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H21E",
+        "physical_road_id": "H21",
+        "from_node_id": "N21",
+        "to_node_id": "N22",
+        "base_seconds": 8,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.67182,
+            19.892545
+          ],
+          [
+            80.669156,
+            19.892321
+          ],
+          [
+            80.666612,
+            19.892917
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H21W",
+        "physical_road_id": "H21",
+        "from_node_id": "N22",
+        "to_node_id": "N21",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.67182,
+            19.892545
+          ],
+          [
+            80.674484,
+            19.892769
+          ],
+          [
+            80.677028,
+            19.892173
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H22E",
+        "physical_road_id": "H22",
+        "from_node_id": "N22",
+        "to_node_id": "N23",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677028,
+            19.892173
+          ],
+          [
+            80.674364,
+            19.891949
+          ],
+          [
+            80.67182,
+            19.892545
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H22W",
+        "physical_road_id": "H22",
+        "from_node_id": "N23",
+        "to_node_id": "N22",
+        "base_seconds": 70,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677028,
+            19.892173
+          ],
+          [
+            80.679692,
+            19.892397
+          ],
+          [
+            80.682236,
+            19.891801
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H23E",
+        "physical_road_id": "H23",
+        "from_node_id": "N23",
+        "to_node_id": "N24",
+        "base_seconds": 82,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682236,
+            19.891801
+          ],
+          [
+            80.679572,
+            19.891577
+          ],
+          [
+            80.677028,
+            19.892173
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H23W",
+        "physical_road_id": "H23",
+        "from_node_id": "N24",
+        "to_node_id": "N23",
+        "base_seconds": 68,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.660876,
+            19.889681
+          ],
+          [
+            80.66354,
+            19.889905
+          ],
+          [
+            80.666084,
+            19.889309
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H30E",
+        "physical_road_id": "H30",
+        "from_node_id": "N30",
+        "to_node_id": "N31",
+        "base_seconds": 80,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666084,
+            19.889309
+          ],
+          [
+            80.66342,
+            19.889085
+          ],
+          [
+            80.660876,
+            19.889681
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H30W",
+        "physical_road_id": "H30",
+        "from_node_id": "N31",
+        "to_node_id": "N30",
+        "base_seconds": 85,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666084,
+            19.889309
+          ],
+          [
+            80.668748,
+            19.889533
+          ],
+          [
+            80.671292,
+            19.888937
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H31E",
+        "physical_road_id": "H31",
+        "from_node_id": "N31",
+        "to_node_id": "N32",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.671292,
+            19.888937
+          ],
+          [
+            80.668628,
+            19.888713
+          ],
+          [
+            80.666084,
+            19.889309
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H31W",
+        "physical_road_id": "H31",
+        "from_node_id": "N32",
+        "to_node_id": "N31",
+        "base_seconds": 74,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.671292,
+            19.888937
+          ],
+          [
+            80.673956,
+            19.889161
+          ],
+          [
+            80.6765,
+            19.888565
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H32E",
+        "physical_road_id": "H32",
+        "from_node_id": "N32",
+        "to_node_id": "N33",
+        "base_seconds": 74,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.6765,
+            19.888565
+          ],
+          [
+            80.673836,
+            19.888341
+          ],
+          [
+            80.671292,
+            19.888937
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H32W",
+        "physical_road_id": "H32",
+        "from_node_id": "N33",
+        "to_node_id": "N32",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.6765,
+            19.888565
+          ],
+          [
+            80.679164,
+            19.888789
+          ],
+          [
+            80.681708,
+            19.888193
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H33E",
+        "physical_road_id": "H33",
+        "from_node_id": "N33",
+        "to_node_id": "N34",
+        "base_seconds": 85,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.660348,
+            19.886073
+          ],
+          [
+            80.663012,
+            19.886297
+          ],
+          [
+            80.665556,
+            19.885701
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H40E",
+        "physical_road_id": "H40",
+        "from_node_id": "N40",
+        "to_node_id": "N41",
+        "base_seconds": 72,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.665556,
+            19.885701
+          ],
+          [
+            80.662892,
+            19.885477
+          ],
+          [
+            80.660348,
+            19.886073
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H40W",
+        "physical_road_id": "H40",
+        "from_node_id": "N41",
+        "to_node_id": "N40",
+        "base_seconds": 84,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.665556,
+            19.885701
+          ],
+          [
+            80.66822,
+            19.885925
+          ],
+          [
+            80.670764,
+            19.885329
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H41E",
+        "physical_road_id": "H41",
+        "from_node_id": "N41",
+        "to_node_id": "N42",
+        "base_seconds": 78,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.670764,
+            19.885329
+          ],
+          [
+            80.6681,
+            19.885105
+          ],
+          [
+            80.665556,
+            19.885701
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H41W",
+        "physical_road_id": "H41",
+        "from_node_id": "N42",
+        "to_node_id": "N41",
+        "base_seconds": 73,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.670764,
+            19.885329
+          ],
+          [
+            80.673428,
+            19.885553
+          ],
+          [
+            80.675972,
+            19.884957
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H42E",
+        "physical_road_id": "H42",
+        "from_node_id": "N42",
+        "to_node_id": "N43",
+        "base_seconds": 10,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.675972,
+            19.884957
+          ],
+          [
+            80.673308,
+            19.884733
+          ],
+          [
+            80.670764,
+            19.885329
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H42W",
+        "physical_road_id": "H42",
+        "from_node_id": "N43",
+        "to_node_id": "N42",
+        "base_seconds": 83,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.675972,
+            19.884957
+          ],
+          [
+            80.678636,
+            19.885181
+          ],
+          [
+            80.68118,
+            19.884585
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "H43E",
+        "physical_road_id": "H43",
+        "from_node_id": "N43",
+        "to_node_id": "N44",
+        "base_seconds": 8,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.66246,
+            19.900505
+          ],
+          [
+            80.662616,
+            19.898671
+          ],
+          [
+            80.661932,
+            19.896897
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V00S",
+        "physical_road_id": "V00",
+        "from_node_id": "N00",
+        "to_node_id": "N10",
+        "base_seconds": 11,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661932,
+            19.896897
+          ],
+          [
+            80.661776,
+            19.898731
+          ],
+          [
+            80.66246,
+            19.900505
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V00N",
+        "physical_road_id": "V00",
+        "from_node_id": "N10",
+        "to_node_id": "N00",
+        "base_seconds": 82,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.667668,
+            19.900133
+          ],
+          [
+            80.667824,
+            19.898299
+          ],
+          [
+            80.66714,
+            19.896525
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V01S",
+        "physical_road_id": "V01",
+        "from_node_id": "N01",
+        "to_node_id": "N11",
+        "base_seconds": 80,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.66714,
+            19.896525
+          ],
+          [
+            80.666984,
+            19.898359
+          ],
+          [
+            80.667668,
+            19.900133
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V01N",
+        "physical_road_id": "V01",
+        "from_node_id": "N11",
+        "to_node_id": "N01",
+        "base_seconds": 84,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672876,
+            19.899761
+          ],
+          [
+            80.673032,
+            19.897927
+          ],
+          [
+            80.672348,
+            19.896153
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V02S",
+        "physical_road_id": "V02",
+        "from_node_id": "N02",
+        "to_node_id": "N12",
+        "base_seconds": 81,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672348,
+            19.896153
+          ],
+          [
+            80.672192,
+            19.897987
+          ],
+          [
+            80.672876,
+            19.899761
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V02N",
+        "physical_road_id": "V02",
+        "from_node_id": "N12",
+        "to_node_id": "N02",
+        "base_seconds": 75,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.678084,
+            19.899389
+          ],
+          [
+            80.67824,
+            19.897555
+          ],
+          [
+            80.677556,
+            19.895781
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V03S",
+        "physical_road_id": "V03",
+        "from_node_id": "N03",
+        "to_node_id": "N13",
+        "base_seconds": 77,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677556,
+            19.895781
+          ],
+          [
+            80.6774,
+            19.897615
+          ],
+          [
+            80.678084,
+            19.899389
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V03N",
+        "physical_road_id": "V03",
+        "from_node_id": "N13",
+        "to_node_id": "N03",
+        "base_seconds": 76,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.683292,
+            19.899017
+          ],
+          [
+            80.683448,
+            19.897183
+          ],
+          [
+            80.682764,
+            19.895409
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V04S",
+        "physical_road_id": "V04",
+        "from_node_id": "N04",
+        "to_node_id": "N14",
+        "base_seconds": 70,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682764,
+            19.895409
+          ],
+          [
+            80.682608,
+            19.897243
+          ],
+          [
+            80.683292,
+            19.899017
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V04N",
+        "physical_road_id": "V04",
+        "from_node_id": "N14",
+        "to_node_id": "N04",
+        "base_seconds": 79,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661932,
+            19.896897
+          ],
+          [
+            80.662088,
+            19.895063
+          ],
+          [
+            80.661404,
+            19.893289
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V10S",
+        "physical_road_id": "V10",
+        "from_node_id": "N10",
+        "to_node_id": "N20",
+        "base_seconds": 11,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661404,
+            19.893289
+          ],
+          [
+            80.661248,
+            19.895123
+          ],
+          [
+            80.661932,
+            19.896897
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V10N",
+        "physical_road_id": "V10",
+        "from_node_id": "N20",
+        "to_node_id": "N10",
+        "base_seconds": 73,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.66714,
+            19.896525
+          ],
+          [
+            80.667296,
+            19.894691
+          ],
+          [
+            80.666612,
+            19.892917
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V11S",
+        "physical_road_id": "V11",
+        "from_node_id": "N11",
+        "to_node_id": "N21",
+        "base_seconds": 83,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666612,
+            19.892917
+          ],
+          [
+            80.666456,
+            19.894751
+          ],
+          [
+            80.66714,
+            19.896525
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V11N",
+        "physical_road_id": "V11",
+        "from_node_id": "N21",
+        "to_node_id": "N11",
+        "base_seconds": 82,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.672348,
+            19.896153
+          ],
+          [
+            80.672504,
+            19.894319
+          ],
+          [
+            80.67182,
+            19.892545
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V12S",
+        "physical_road_id": "V12",
+        "from_node_id": "N12",
+        "to_node_id": "N22",
+        "base_seconds": 71,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.67182,
+            19.892545
+          ],
+          [
+            80.671664,
+            19.894379
+          ],
+          [
+            80.672348,
+            19.896153
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V12N",
+        "physical_road_id": "V12",
+        "from_node_id": "N22",
+        "to_node_id": "N12",
+        "base_seconds": 70,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677556,
+            19.895781
+          ],
+          [
+            80.677712,
+            19.893947
+          ],
+          [
+            80.677028,
+            19.892173
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V13S",
+        "physical_road_id": "V13",
+        "from_node_id": "N13",
+        "to_node_id": "N23",
+        "base_seconds": 80,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677028,
+            19.892173
+          ],
+          [
+            80.676872,
+            19.894007
+          ],
+          [
+            80.677556,
+            19.895781
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V13N",
+        "physical_road_id": "V13",
+        "from_node_id": "N23",
+        "to_node_id": "N13",
+        "base_seconds": 75,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682764,
+            19.895409
+          ],
+          [
+            80.68292,
+            19.893575
+          ],
+          [
+            80.682236,
+            19.891801
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V14S",
+        "physical_road_id": "V14",
+        "from_node_id": "N14",
+        "to_node_id": "N24",
+        "base_seconds": 85,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682236,
+            19.891801
+          ],
+          [
+            80.68208,
+            19.893635
+          ],
+          [
+            80.682764,
+            19.895409
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V14N",
+        "physical_road_id": "V14",
+        "from_node_id": "N24",
+        "to_node_id": "N14",
+        "base_seconds": 72,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.661404,
+            19.893289
+          ],
+          [
+            80.66156,
+            19.891455
+          ],
+          [
+            80.660876,
+            19.889681
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V20S",
+        "physical_road_id": "V20",
+        "from_node_id": "N20",
+        "to_node_id": "N30",
+        "base_seconds": 68,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.660876,
+            19.889681
+          ],
+          [
+            80.66072,
+            19.891515
+          ],
+          [
+            80.661404,
+            19.893289
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V20N",
+        "physical_road_id": "V20",
+        "from_node_id": "N30",
+        "to_node_id": "N20",
+        "base_seconds": 75,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666612,
+            19.892917
+          ],
+          [
+            80.666768,
+            19.891083
+          ],
+          [
+            80.666084,
+            19.889309
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V21S",
+        "physical_road_id": "V21",
+        "from_node_id": "N21",
+        "to_node_id": "N31",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666084,
+            19.889309
+          ],
+          [
+            80.665928,
+            19.891143
+          ],
+          [
+            80.666612,
+            19.892917
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V21N",
+        "physical_road_id": "V21",
+        "from_node_id": "N31",
+        "to_node_id": "N21",
+        "base_seconds": 76,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.67182,
+            19.892545
+          ],
+          [
+            80.671976,
+            19.890711
+          ],
+          [
+            80.671292,
+            19.888937
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V22S",
+        "physical_road_id": "V22",
+        "from_node_id": "N22",
+        "to_node_id": "N32",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.671292,
+            19.888937
+          ],
+          [
+            80.671136,
+            19.890771
+          ],
+          [
+            80.67182,
+            19.892545
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V22N",
+        "physical_road_id": "V22",
+        "from_node_id": "N32",
+        "to_node_id": "N22",
+        "base_seconds": 75,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.677028,
+            19.892173
+          ],
+          [
+            80.677184,
+            19.890339
+          ],
+          [
+            80.6765,
+            19.888565
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V23S",
+        "physical_road_id": "V23",
+        "from_node_id": "N23",
+        "to_node_id": "N33",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.682236,
+            19.891801
+          ],
+          [
+            80.682392,
+            19.889967
+          ],
+          [
+            80.681708,
+            19.888193
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V24S",
+        "physical_road_id": "V24",
+        "from_node_id": "N24",
+        "to_node_id": "N34",
+        "base_seconds": 84,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.681708,
+            19.888193
+          ],
+          [
+            80.681552,
+            19.890027
+          ],
+          [
+            80.682236,
+            19.891801
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V24N",
+        "physical_road_id": "V24",
+        "from_node_id": "N34",
+        "to_node_id": "N24",
+        "base_seconds": 70,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.660876,
+            19.889681
+          ],
+          [
+            80.661032,
+            19.887847
+          ],
+          [
+            80.660348,
+            19.886073
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V30S",
+        "physical_road_id": "V30",
+        "from_node_id": "N30",
+        "to_node_id": "N40",
+        "base_seconds": 73,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.666084,
+            19.889309
+          ],
+          [
+            80.66624,
+            19.887475
+          ],
+          [
+            80.665556,
+            19.885701
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V31S",
+        "physical_road_id": "V31",
+        "from_node_id": "N31",
+        "to_node_id": "N41",
+        "base_seconds": 71,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.665556,
+            19.885701
+          ],
+          [
+            80.6654,
+            19.887535
+          ],
+          [
+            80.666084,
+            19.889309
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V31N",
+        "physical_road_id": "V31",
+        "from_node_id": "N41",
+        "to_node_id": "N31",
+        "base_seconds": 74,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.671292,
+            19.888937
+          ],
+          [
+            80.671448,
+            19.887103
+          ],
+          [
+            80.670764,
+            19.885329
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V32S",
+        "physical_road_id": "V32",
+        "from_node_id": "N32",
+        "to_node_id": "N42",
+        "base_seconds": 9,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.6765,
+            19.888565
+          ],
+          [
+            80.676656,
+            19.886731
+          ],
+          [
+            80.675972,
+            19.884957
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V33S",
+        "physical_road_id": "V33",
+        "from_node_id": "N33",
+        "to_node_id": "N43",
+        "base_seconds": 82,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.675972,
+            19.884957
+          ],
+          [
+            80.675816,
+            19.886791
+          ],
+          [
+            80.6765,
+            19.888565
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V33N",
+        "physical_road_id": "V33",
+        "from_node_id": "N43",
+        "to_node_id": "N33",
+        "base_seconds": 73,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.681708,
+            19.888193
+          ],
+          [
+            80.681864,
+            19.886359
+          ],
+          [
+            80.68118,
+            19.884585
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V34S",
+        "physical_road_id": "V34",
+        "from_node_id": "N34",
+        "to_node_id": "N44",
+        "base_seconds": 73,
+        "atlas_anchor_vertex": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.68118,
+            19.884585
+          ],
+          [
+            80.681024,
+            19.886419
+          ],
+          [
+            80.681708,
+            19.888193
+          ]
+        ]
+      },
+      "properties": {
+        "feature_type": "edge",
+        "edge_id": "V34N",
+        "physical_road_id": "V34",
+        "from_node_id": "N44",
+        "to_node_id": "N34",
+        "base_seconds": 72,
+        "atlas_anchor_vertex": 1
+      }
+    }
+  ]
+}
