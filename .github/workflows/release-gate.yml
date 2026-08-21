@@ -15,7 +15,7 @@ jobs:
       id-token: none
 
     steps:
-      - name: TDS identity: 25f1000659@ds.study.iitm.ac.in
+      - name: "TDS identity: 25f1000659@ds.study.iitm.ac.in"
         run: echo "TDS identity verified"
 
       - name: Checkout
