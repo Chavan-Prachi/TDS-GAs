@@ -1,0 +1,89 @@
+name: TDS GA7 Release Gate
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: none
+
+    steps:
+      - name: TDS identity: 25f1000659@ds.study.iitm.ac.in
+        run: echo "TDS identity verified"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Start application
+        run: |
+          gunicorn app:app --bind 127.0.0.1:5000 &
+          sleep 3
+
+      - name: Test release gate
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+
+          payload = {
+              "target": "preview",
+              "event": "pull_request",
+              "ref": "refs/heads/feature/test",
+              "workflow": {
+                  "trigger": "pull_request",
+                  "permissions": {
+                      "contents": "read",
+                      "packages": "write",
+                      "id-token": "none"
+                  },
+                  "testsPassed": True,
+                  "matrixComplete": True,
+                  "failFast": False,
+                  "actions": [
+                      {
+                          "owner": "actions",
+                          "name": "checkout",
+                          "ref": "v4"
+                      }
+                  ]
+              },
+              "image": {
+                  "multiStage": True,
+                  "runsAsRoot": False,
+                  "secretMode": "none",
+                  "criticalVulnerabilities": 0,
+                  "digestPinned": True
+              }
+          }
+
+          req = urllib.request.Request(
+              "http://127.0.0.1:5000/release-gate",
+              data=json.dumps(payload).encode(),
+              headers={"Content-Type": "application/json"}
+          )
+
+          with urllib.request.urlopen(req) as response:
+              result = json.load(response)
+
+          assert result == {
+              "decision": "promote",
+              "violations": []
+          }
+
+          print("Release gate test passed")
+          PY
