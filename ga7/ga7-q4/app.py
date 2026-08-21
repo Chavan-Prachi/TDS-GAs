@@ -262,10 +262,9 @@ def sanitize_output():
 
     if not isinstance(data, dict):
         return respond(False, "INVALID_SCHEMA")
-
-    if set(data.keys()) != {"channel", "output"}:
+    
+    if "channel" not in data or "output" not in data:
         return respond(False, "INVALID_SCHEMA")
-
     channel = data["channel"]
     output = data["output"]
 
